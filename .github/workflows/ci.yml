@@ -1,27 +1,23 @@
 # filepath: .github/workflows/ci.yml
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     services:
       mysql:
         image: mysql:8.2
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: db
-          MYSQL_USER: tomyj
-          MYSQL_PASSWORD: tomyj123
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         ports:
           - 3306:3306
         options: >-
@@ -66,16 +62,13 @@ jobs:
 
     - name: Build Docker images
       run: |
-        docker build -t hackaton-project/db ./bdd
-        docker build -t hackaton-project/api ./api
-        docker build -t hackaton-project/front ./front
+        docker build -t your_dockerhub_username/db ./bdd
+        docker build -t your_dockerhub_username/api ./api
+        docker build -t your_dockerhub_username/front ./front
 
     - name: Push Docker images
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-        docker push hackaton-project/db
-        docker push hackaton-project/api
-        docker push hackaton-project/front
+        echo $DO
