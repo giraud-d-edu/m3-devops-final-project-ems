@@ -25,9 +25,9 @@ Le but étant de recevoir des avis constructifs et non biaisé. Il n'y aura donc
 ## Utilisation technique
 Une commande doit être entrée pour lancer le projet :
 
-
 ```bash
-git clone le projet
+#Sur le VPS
+git clone https://github.com/giraud-d-edu/m3-devops-final-project-ems.git
 ```
 
 ```bash
