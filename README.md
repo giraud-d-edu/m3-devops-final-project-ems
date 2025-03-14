@@ -31,9 +31,6 @@ git clone https://github.com/giraud-d-edu/m3-devops-final-project-ems.git
 ```
 
 ```bash
-docker compose build
-```
-
-```bash
-docker compose up -d (afin de détacher l'image du terminal).
+docker compose up --build -d
+# -d (détache l'image du terminal). 
 ```
