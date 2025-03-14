@@ -1,4 +1,9 @@
-# HackatonProject  
+# HackatonProject
+
+### Equipe
+Louis Simon
+Enzo Achard
+Matéo Mesguen
 
 ### Contexte :  
 **Hackaton 8 janv - 12 janv 2024**  
