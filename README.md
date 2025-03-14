@@ -27,5 +27,13 @@ Une commande doit être entrée pour lancer le projet :
 
 
 ```bash
-docker compose up --build
+git clone le projet
+```
+
+```bash
+docker compose build
+```
+
+```bash
+docker compose up -d (afin de détacher l'image du terminal).
 ```
