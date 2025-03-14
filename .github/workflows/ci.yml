@@ -1,0 +1,81 @@
+# filepath: .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.2
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: db
+          MYSQL_USER: tomyj
+          MYSQL_PASSWORD: tomyj123
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+
+    - name: Install dependencies for frontend
+      working-directory: ./front
+      run: npm ci
+
+    - name: Build frontend
+      working-directory: ./front
+      run: npm run build
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.21'
+
+    - name: Install dependencies for backend
+      working-directory: ./api
+      run: go mod tidy
+
+    - name: Build backend
+      working-directory: ./api
+      run: go build -o api .
+
+    - name: Run tests
+      working-directory: ./api
+      run: go test ./...
+
+    - name: Build Docker images
+      run: |
+        docker build -t hackaton-project/db ./bdd
+        docker build -t hackaton-project/api ./api
+        docker build -t hackaton-project/front ./front
+
+    - name: Push Docker images
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+        docker push hackaton-project/db
+        docker push hackaton-project/api
+        docker push hackaton-project/front
