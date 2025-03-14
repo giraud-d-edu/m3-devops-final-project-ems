@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - actions
 
 jobs:
   build-and-deploy:
@@ -71,4 +72,20 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        echo $DO
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+        docker push your_dockerhub_username/db
+        docker push your_dockerhub_username/api
+        docker push your_dockerhub_username/front
+
+    - name: Deploy to VPS
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+        chmod 600 private_key
+        ssh -i private_key -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST << 'EOF'
+          cd /root
+          ./deploy.sh
+        EOF
