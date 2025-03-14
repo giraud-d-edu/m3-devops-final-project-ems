@@ -29,7 +29,7 @@ services:
       context: ./front
       dockerfile: Dockerfile
     ports:
-      - "30033:80"
+      - "80:80"
     restart: unless-stopped
 
 volumes:
