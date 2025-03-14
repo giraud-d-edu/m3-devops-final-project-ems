@@ -34,3 +34,4 @@ git clone https://github.com/giraud-d-edu/m3-devops-final-project-ems.git
 docker compose up --build -d
 # -d (détache l'image du terminal). 
 ```
+Le projet est accessible via http://93.90.205.209:30033/
